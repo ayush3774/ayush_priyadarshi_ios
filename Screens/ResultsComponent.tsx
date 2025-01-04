@@ -8,12 +8,15 @@ import {
   StyleSheet,
 } from 'react-native';
 import axios from 'axios';
+import RetryModal from '../Components/RetryModal';
 
 const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
   const [data, setData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const ITEMS_PER_PAGE = 10;
 
@@ -29,15 +32,26 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
       setData(prev => [...prev, ...newItems]);
 
       if (newItems.length < ITEMS_PER_PAGE) {
-        setHasMore(false); 
+        setHasMore(false);
       }
 
       setPage(prev => prev + 1);
     } catch (error) {
+      setErrorMessage('Failed to load users. Please check your connection.');
+      setShowModal(true);
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setShowModal(false);
+    fetchUsers(); // Retry fetching the data
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -74,18 +88,26 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
     );
 
   return (
-    <FlatList
-      data={data}
-      keyExtractor={(item, index) => `${item.id}-${index}`}
-      renderItem={renderItem}
-      onEndReached={fetchUsers}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={renderFooter}
-      ListEmptyComponent={renderEmptyComponent}
-      contentContainerStyle={
-        data.length === 0 ? styles.emptyContent : undefined
-      }
-    />
+    <View style={{flex: 1}}>
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        renderItem={renderItem}
+        onEndReached={fetchUsers}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmptyComponent}
+        contentContainerStyle={
+          data.length === 0 ? styles.emptyContent : undefined
+        }
+      />
+      <RetryModal
+        visible={showModal}
+        onRetry={handleRetry}
+        errorMessage={errorMessage}
+        onClose={handleCloseModal}
+      />
+    </View>
   );
 };
 
