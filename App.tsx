@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Provider} from 'react-redux';
 import {store} from './Service/store';
 import {View, StyleSheet} from 'react-native';
-import SearchComponent from './Components/SearchComponent';
-import ResultsComponent from './Components/ResultsComponent';
+import SearchComponent from './Screens/SearchComponent';
+import ResultsComponent from './Screens/ResultsComponent';
 
 const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');

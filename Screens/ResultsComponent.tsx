@@ -29,7 +29,7 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
       setData(prev => [...prev, ...newItems]);
 
       if (newItems.length < ITEMS_PER_PAGE) {
-        setHasMore(false); // No more items to fetch
+        setHasMore(false); 
       }
 
       setPage(prev => prev + 1);

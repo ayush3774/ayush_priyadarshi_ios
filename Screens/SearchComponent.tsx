@@ -1,12 +1,6 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Keyboard,
-} from 'react-native';
+import {View, TextInput, StyleSheet, Keyboard} from 'react-native';
+import Button from '../Components/Button';
 
 interface SearchComponentProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -16,8 +10,12 @@ const SearchComponent: React.FC<SearchComponentProps> = ({setSearchQuery}) => {
   const [login, setLogin] = useState<string>('');
 
   const handleSubmit = () => {
-    setSearchQuery(login.trim());
-    Keyboard.dismiss();
+    if (login.trim()) {
+      setSearchQuery(login.trim());
+      Keyboard.dismiss();
+    } else {
+      console.warn('Search query cannot be empty.');
+    }
   };
 
   return (
@@ -29,9 +27,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({setSearchQuery}) => {
         value={login}
         onChangeText={setLogin}
       />
-      <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
+      <Button text="Submit" onPress={handleSubmit} />
     </View>
   );
 };
@@ -48,17 +44,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#3D3D3D',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 4,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
   },
 });
 
