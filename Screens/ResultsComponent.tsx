@@ -15,7 +15,6 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const ITEMS_PER_PAGE = 10;
@@ -38,20 +37,11 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
       setPage(prev => prev + 1);
     } catch (error) {
       setErrorMessage('Failed to load users. Please check your connection.');
-      setShowModal(true);
+
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleRetry = () => {
-    setShowModal(false);
-    fetchUsers(); // Retry fetching the data
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
   };
 
   useEffect(() => {
@@ -100,12 +90,6 @@ const ResultsComponent: React.FC<{searchQuery: string}> = ({searchQuery}) => {
         contentContainerStyle={
           data.length === 0 ? styles.emptyContent : undefined
         }
-      />
-      <RetryModal
-        visible={showModal}
-        onRetry={handleRetry}
-        errorMessage={errorMessage}
-        onClose={handleCloseModal}
       />
     </View>
   );

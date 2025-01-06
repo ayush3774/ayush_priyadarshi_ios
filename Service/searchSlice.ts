@@ -25,9 +25,9 @@ export const fetchUsers = createAsyncThunk(
   async (login: string, {rejectWithValue}) => {
     try {
       const response = await axios.get(
-        `https://api.github.com/search/users?q=${login} in:login`,
+        `https://api.github.com/search/users?q=${login}+in:login`,
       );
-      console.log('API Response:', response.data.items); // Log here
+      console.log('API Response:', response.data.items);
       return response.data.items;
     } catch (error: any) {
       console.error('API Error:', error.message);
@@ -52,7 +52,7 @@ const searchSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch users';
+        state.error = action.payload || 'Failed to fetch users';
       });
   },
 });
